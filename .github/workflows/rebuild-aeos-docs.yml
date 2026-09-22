@@ -1,0 +1,40 @@
+name: Rebuild AEOS binary documents
+
+on:
+  push:
+    paths:
+      - 'staging/READY'
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Rebuild files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p docs
+          cat staging/base64/execution_plan/part_* | base64 -d > "docs/AEOS_V7.2_分模块分阶段具体执行方案_V1.0.docx"
+          cat staging/base64/progress_workbook/part_* | base64 -d > "docs/AEOS_开发点检与进度表_V1.0.xlsx"
+          cat staging/base64/development_manual/part_* | base64 -d > "docs/AEOS_项目开发执行手册_V1.0.docx"
+          test "$(stat -c%s "docs/AEOS_V7.2_分模块分阶段具体执行方案_V1.0.docx")" -eq 528704
+          test "$(stat -c%s "docs/AEOS_开发点检与进度表_V1.0.xlsx")" -eq 55114
+          test "$(stat -c%s "docs/AEOS_项目开发执行手册_V1.0.docx")" -eq 48367
+          file "docs/AEOS_V7.2_分模块分阶段具体执行方案_V1.0.docx"
+          file "docs/AEOS_开发点检与进度表_V1.0.xlsx"
+          file "docs/AEOS_项目开发执行手册_V1.0.docx"
+      - name: Commit rebuilt files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "AEOS Automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add docs
+          git rm -r staging/base64 staging/READY
+          git commit -m "Add AEOS V7.2 execution baseline documents"
+          git push
