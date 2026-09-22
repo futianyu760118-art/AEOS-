@@ -1,0 +1,42 @@
+name: Rebuild P0 architecture documents
+
+on:
+  push:
+    paths:
+      - 'staging/P0_READY'
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Rebuild and verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f staging/P0_READY
+          test -n "$(find staging/p0/system_registry -name 'part_*' -print -quit)"
+          test -n "$(find staging/p0/module_mapping -name 'part_*' -print -quit)"
+          mkdir -p docs/P0
+          cat staging/p0/system_registry/part_* | base64 -d > "docs/P0/AEOS_P0-01_System_Registry_V1.docx"
+          cat staging/p0/module_mapping/part_* | base64 -d > "docs/P0/AEOS_P0-02_Module_Mapping_Matrix_V1.docx"
+          test "$(stat -c%s "docs/P0/AEOS_P0-01_System_Registry_V1.docx")" -eq 48389
+          test "$(stat -c%s "docs/P0/AEOS_P0-02_Module_Mapping_Matrix_V1.docx")" -eq 52122
+          echo "07969ed5e1058a7d85a8b2c22638f6c1ef6950bbc45bfb8d4796640dbbd54ed0  docs/P0/AEOS_P0-01_System_Registry_V1.docx" | sha256sum -c -
+          echo "faf55fe69d82be040686ff00c69ac274bb9c1ff32c098fc91351f078fb289291  docs/P0/AEOS_P0-02_Module_Mapping_Matrix_V1.docx" | sha256sum -c -
+
+      - name: Commit verified documents
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "AEOS Automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add docs/P0
+          git rm -r staging/p0 staging/P0_READY
+          git commit -m "Add verified P0-01 and P0-02 architecture baselines"
+          git push
