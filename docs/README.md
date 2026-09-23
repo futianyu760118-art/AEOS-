@@ -21,3 +21,8 @@
 P0-01 冻结一级系统地图；P0-02 将现有 EBMS、交付中台、恒聘通、研发模块映射到冻结后的目标 Domain，为 P1 模块化、P0-03 Data Ownership、P0-05 契约工作提供迁移依据。
 
 项目级最小正式基线完整性见 `BASELINE_MANIFEST.md`；P0 文件完整性见 `P0/README.md`。
+
+
+## 架构适配评估归档
+
+- `archive/meeting-helper_AEOS_V7.2_适配评估报告_V1.0.md` — meeting-helper 与 AEOS V7.2 的架构适配评估；归档结论为将其演进为 AEOS 公共能力层的“决策与执行闭环中心（Decision & Execution Hub）”，并明确 P0 契约整改项。
