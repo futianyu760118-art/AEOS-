@@ -39,3 +39,12 @@ Action 必须具有 Owner、Deadline、状态、Verification 和回滚/升级路
 ## Contract Gate
 
 Contract Test 未通过，不得作为 G2 平台门禁的正式能力。
+
+
+## 7. DEH 执行契约
+
+Decision & Execution Hub 的 meeting-helper 迁移执行契约见：
+
+- `DEH_CONTRACT_V1.md`
+
+该文件在现有 Contract Pack 骨架之上冻结 Goal Link、Decision、Action、Result、Evidence、Event 的最小字段、验证语义、幂等和迁移规则。DEH 是跨 M01 + M02 的逻辑执行枢纽，不新增一级系统编号。
