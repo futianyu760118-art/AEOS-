@@ -26,3 +26,6 @@ P0-01 冻结一级系统地图；P0-02 将现有 EBMS、交付中台、恒聘通
 ## 架构适配评估归档
 
 - `archive/meeting-helper_AEOS_V7.2_适配评估报告_V1.0.md` — meeting-helper 与 AEOS V7.2 的架构适配评估；归档结论为将其演进为 AEOS 公共能力层的“决策与执行闭环中心（Decision & Execution Hub）”，并明确 P0 契约整改项。
+
+
+- `archive/SPC_AEOS_V7.2_对标与整改存档报告_V1.0.md` — SPC（spc1）对标 AEOS V7.2 的代码级评估与12周整改基线；正式定位为 M06 交付自治中心核心实现，明确边界收敛、契约改造、公共能力解耦、ERP集成收口和专业深化路线。
