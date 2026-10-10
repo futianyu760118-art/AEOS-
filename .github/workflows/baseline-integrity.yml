@@ -1,0 +1,25 @@
+name: AEOS Baseline Integrity
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * 1'
+  push:
+    paths:
+      - 'docs/AEOS_V7.2_*.docx'
+      - 'docs/AEOS_项目开发执行手册_V1.0.docx'
+      - 'docs/AEOS_开发点检与进度表_V1.0.xlsx'
+      - 'docs/AEOS_企业数据与智能中台_*.docx'
+      - 'docs/BASELINE_MANIFEST.md'
+      - 'scripts/check_baseline.py'
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check controlled baseline
+        run: python scripts/check_baseline.py --strict
