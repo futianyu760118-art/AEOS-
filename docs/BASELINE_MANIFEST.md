@@ -33,3 +33,12 @@
 任何缺失或校验失败均视为 NOT_READY。
 
 P0-01 / P0-02 的业务生效状态以文件内签批条件和 Development Ledger 记录为准，不能仅因文件进入 GitHub 即自动视为 EFFECTIVE。
+
+
+## AEOS V7.2.2 增补受控架构原则
+
+| 路径 | 文档状态 | 适用范围 |
+|---|---|---|
+| architecture/PROFESSIONAL_OPERATION_SURFACE_V1.md | P0 架构执行原则 | M04～M14 所有专业自治系统 |
+
+该原则定义“专业业务必须在所属自治系统拥有正式操作界面”，并约束 POMS、EBMS、Agent 与 Domain Operation Surface 的职责边界。
