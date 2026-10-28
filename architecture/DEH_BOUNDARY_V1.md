@@ -92,3 +92,18 @@ Fact → Event → DecisionCase → Decision → Action → Result → Verify �
 - Event
 
 后续源码迁移必须基于本边界执行。
+
+
+## 8. Professional Operation Surface（AEOS V7.2.2 增补）
+
+DEH 只负责跨模块逻辑执行闭环，不替代专业自治系统操作界面。
+
+统一原则：
+- M04～M09 及后续专业自治系统必须拥有各自正式专业操作面；
+- M10 POMS 负责 Todo / Action / Feedback / Deep Link，不复制完整专业业务逻辑；
+- M03 EBMS 负责 Result / Exception / Decision / Evidence，不承担专业录入和审批主界面；
+- 专业状态变化必须由 Domain Owner System 执行；
+- POMS / EBMS / Agent 发起专业动作时，必须经过 SSO Deep Link 或标准受控 API；
+- Agent 不得绕过 Domain Operation Surface 与 M01 Guard 直接写最终状态。
+
+受控原则文件：`architecture/PROFESSIONAL_OPERATION_SURFACE_V1.md`。
