@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "owners": [
+    {"owner_ref": "owner.m00", "role": "architecture-governance-owner", "accountable_for": "registry-and-boundaries", "status": "PENDING_SIGN_OFF"},
+    {"owner_ref": "owner.m01", "role": "identity-and-control-owner", "accountable_for": "M01_KERNEL", "status": "PENDING_SIGN_OFF"},
+    {"owner_ref": "owner.m02", "role": "data-and-evidence-owner", "accountable_for": "M02_EDP", "status": "PENDING_SIGN_OFF"},
+    {"owner_ref": "owner.m03", "role": "management-domain-owner", "accountable_for": "M03_EBMS", "status": "PENDING_SIGN_OFF"},
+    {"owner_ref": "owner.m04", "role": "research-and-development-owner", "accountable_for": "M04_PLM", "status": "PENDING_SIGN_OFF"},
+    {"owner_ref": "owner.m05", "role": "sales-domain-owner", "accountable_for": "M05_CRM", "status": "PENDING_SIGN_OFF"},
+    {"owner_ref": "owner.m06", "role": "delivery-domain-owner", "accountable_for": "M06_SPC", "status": "PENDING_SIGN_OFF"},
+    {"owner_ref": "owner.m07", "role": "people-and-logistics-owner", "accountable_for": "M07_HLC", "status": "PENDING_SIGN_OFF"},
+    {"owner_ref": "owner.m09", "role": "finance-domain-owner", "accountable_for": "M09_FAC", "status": "PENDING_SIGN_OFF"},
+    {"owner_ref": "owner.m10", "role": "personal-operations-owner", "accountable_for": "M10_POMS", "status": "PENDING_SIGN_OFF"},
+    {"owner_ref": "owner.m13", "role": "agent-runtime-owner", "accountable_for": "M13_AEOS_HUB", "status": "PENDING_SIGN_OFF"},
+    {"owner_ref": "owner.m14", "role": "development-operations-owner", "accountable_for": "M14_NOMI_1 and M14_NOMI", "status": "PENDING_SIGN_OFF"}
+  ]
+}

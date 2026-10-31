@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "environments": [
+    {"environment_id": "env.local", "name": "local", "purpose": "developer workstation", "endpoint_ref": "EXTERNAL_SIGN_OFF: local endpoint", "credentials_ref": "EXTERNAL_SIGN_OFF: local secrets", "certificate_ref": "EXTERNAL_SIGN_OFF: local certificates", "status": "PENDING_SIGN_OFF"},
+    {"environment_id": "env.development", "name": "development", "purpose": "shared development", "endpoint_ref": "EXTERNAL_SIGN_OFF: development endpoint", "credentials_ref": "EXTERNAL_SIGN_OFF: development secrets", "certificate_ref": "EXTERNAL_SIGN_OFF: development certificates", "status": "PENDING_SIGN_OFF"},
+    {"environment_id": "env.test", "name": "test", "purpose": "automated and integration testing", "endpoint_ref": "EXTERNAL_SIGN_OFF: test endpoint", "credentials_ref": "EXTERNAL_SIGN_OFF: test secrets", "certificate_ref": "EXTERNAL_SIGN_OFF: test certificates", "status": "PENDING_SIGN_OFF"},
+    {"environment_id": "env.staging", "name": "staging", "purpose": "release rehearsal", "endpoint_ref": "EXTERNAL_SIGN_OFF: staging endpoint", "credentials_ref": "EXTERNAL_SIGN_OFF: staging secrets", "certificate_ref": "EXTERNAL_SIGN_OFF: staging certificates", "status": "PENDING_SIGN_OFF"},
+    {"environment_id": "env.production", "name": "production", "purpose": "production deployment", "endpoint_ref": "EXTERNAL_SIGN_OFF: production endpoint", "credentials_ref": "EXTERNAL_SIGN_OFF: production secrets", "certificate_ref": "EXTERNAL_SIGN_OFF: production certificates", "status": "PENDING_SIGN_OFF"}
+  ]
+}
