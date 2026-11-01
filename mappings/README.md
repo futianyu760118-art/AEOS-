@@ -9,3 +9,5 @@ The Phase 1 mapping slots reserved by the implementation plan are:
 - `fac-ebms-result.yaml` — M09 FAC verified finance results to M03 EBMS management views.
 
 Each mapping must identify source and target systems, object ownership, field semantics, units/currency, revision and effective-time rules, state transitions, evidence references, and compatibility handling. Changes require review by both the source owner and the consuming owner.
+
+The three Phase 1 mapping files are now the reviewable starting point for the first business closure. They are deliberately descriptive contracts; adapters must validate them before writing a target fact, and a target system must never treat an event projection as ownership transfer.
