@@ -40,6 +40,15 @@ class ValidateContractsTests(unittest.TestCase):
             self.assertFalse(schema["additionalProperties"])
             self.assertTrue(schema["required"])
 
+    def test_lead_intake_contract_has_explicit_wire_version(self):
+        schema = validate_contracts.load_schemas(REPO_ROOT)["lead-intake-v1.schema.json"]
+
+        self.assertEqual(schema["schema_version"], "2.0.0")
+        self.assertIn("contract_version", schema["required"])
+        self.assertEqual(
+            schema["properties"]["contract_version"]["const"], "LeadIntakeV1"
+        )
+
     def test_manifest_fingerprint_mismatch_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

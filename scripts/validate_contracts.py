@@ -16,7 +16,7 @@ EXPECTED_SCHEMAS = {
     "audit-event-v1.schema.json": {"tenant_id", "event_id", "event_type", "source_system", "object_id", "revision", "trace_id", "idempotency_key"},
     "business-event-v1.schema.json": {"tenant_id", "event_id", "event_type", "source_system", "object_id", "revision", "trace_id", "idempotency_key"},
     "finance-result-v1.schema.json": {"tenant_id", "result_id", "source_system", "object_id", "revision", "status", "evidence_refs"},
-    "lead-intake-v1.schema.json": {"intake_id", "source_system", "submitted_at", "contact", "consent", "idempotency_key"},
+    "lead-intake-v1.schema.json": {"contract_version", "intake_id", "source_system", "submitted_at", "contact", "consent", "idempotency_key"},
 }
 SCHEMA_VERSION_RE = re.compile(r"^\d+\.\d+\.\d+$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
