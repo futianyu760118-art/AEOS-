@@ -54,10 +54,16 @@ foreach ($system in $registry.systems) {
 foreach ($system in $registry.systems) {
     if ($notDeployed -contains $system.system_id -or -not $urls.ContainsKey($system.system_id)) { continue }
     try {
-        $response = Invoke-WebRequest -Uri $urls[$system.system_id] -Method Options -TimeoutSec $TimeoutSec -UseBasicParsing
+        $response = Invoke-WebRequest -Uri $urls[$system.system_id] -Method Head -TimeoutSec $TimeoutSec -UseBasicParsing
         Write-Host "$($system.system_id)：网络可达（$($response.StatusCode)）"
     } catch {
-        Write-Warning "$($system.system_id)：未通过网络探测；没有输出密钥或请求内容。"
+        $statusCode = $null
+        try { $statusCode = [int]$_.Exception.Response.StatusCode } catch { }
+        if ($statusCode -in @(404, 405)) {
+            Write-Host "$($system.system_id)：服务已响应（$statusCode；该入口只接受 POST）"
+        } else {
+            Write-Warning "$($system.system_id)：未通过网络探测；没有输出密钥或请求内容。"
+        }
     }
 }
 
