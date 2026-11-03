@@ -1,0 +1,8 @@
+{
+  "version": "1.0",
+  "gates": [
+    {"system_id": "M08_QUALITY", "module": "M08", "display_name": "Quality autonomous center", "deployment_state": "NOT_DEPLOYED", "reason": "no independent deployable repository in Phase 1 workspace"},
+    {"system_id": "M11_INTEGRATION", "module": "M11", "display_name": "Integration and hardware access", "deployment_state": "NOT_DEPLOYED", "reason": "no independent deployable repository in Phase 1 workspace"},
+    {"system_id": "M12_DEVSECOPS", "module": "M12", "display_name": "DevSecOps and observability", "deployment_state": "NOT_DEPLOYED", "reason": "no independent deployable repository in Phase 1 workspace"}
+  ]
+}

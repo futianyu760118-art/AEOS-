@@ -20,6 +20,8 @@
 - `adr/`：Architecture Decision Record
 - `staging/`：二进制文档临时重建区，禁止作为正式事实源
 - `.github/`：CI、模板、CODEOWNERS
+- `registry/`：Phase 1 机器可读系统、环境、Owner、依赖和系统 Manifest 唯一注册源
+- `mappings/`：跨系统字段映射与状态机治理；事实归属仍由源系统持有
 
 ## 管理原则
 
@@ -32,3 +34,7 @@
 ## 当前仓库状态
 
 正式二进制基线以 `docs/BASELINE_MANIFEST.md` 为准。缺失或校验失败的文件不得作为受控基线使用。
+
+## Phase 1 registry
+
+`registry/` is the additive execution registry for the Phase 1 system group. It complements `architecture/SYSTEM_REGISTRY_V1.md` and `architecture/DATA_OWNERSHIP_MATRIX_V1.md`; those documents remain the architecture and ownership references. Run `python scripts/validate_registry.py` from the repository root before treating a manifest as ready. The checked-in systems are intentionally `CANDIDATE` until environment and role-based Owner sign-off is supplied.
