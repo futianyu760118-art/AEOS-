@@ -22,18 +22,32 @@ if ([string]::IsNullOrWhiteSpace($SourceUrl) -or [string]::IsNullOrWhiteSpace($K
 }
 
 $now = [DateTimeOffset]::UtcNow
+$eventId = [Guid]::NewGuid().ToString("N")
+$correlationId = [Guid]::NewGuid().ToString("N")
+$traceId = [Guid]::NewGuid().ToString("N")
+$revision = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+$status = if ($EventType -eq "person.offboarded") { "inactive" } else { "active" }
+$employmentAction = if ($EventType -eq "person.offboarded") { "offboard" } else { "reinstate" }
 $body = [ordered]@{
-    event_id = [Guid]::NewGuid().ToString("N")
+    event_id = $eventId
     event_type = $EventType
+    event_version = 1
     tenant_id = $TenantId
     source_system = "M01_KERNEL"
-    revision = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+    object_type = "Person"
+    object_id = $PersonId
+    revision = $revision
     occurred_at = $now.ToString("o")
+    effective_at = $now.ToString("o")
+    correlation_id = $correlationId
+    trace_id = $traceId
+    idempotency_key = "person-lifecycle:${TenantId}:${PersonId}:${revision}"
+    status = $status
+    employment_action = $employmentAction
+    occurred_by = "manual-e2e"
     person = [ordered]@{
         person_id = $PersonId
-        display_name = $DisplayName
-        employee_code = $EmployeeCode
-        tenant_id = $TenantId
+        emp_code = $EmployeeCode
     }
 } | ConvertTo-Json -Depth 8 -Compress
 
