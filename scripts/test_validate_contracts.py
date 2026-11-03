@@ -15,6 +15,8 @@ EXPECTED_SCHEMAS = {
     "business-event-v1.schema.json",
     "finance-result-v1.schema.json",
     "lead-intake-v1.schema.json",
+    "person-lifecycle-event-v1.schema.json",
+    "person-lifecycle-result-v1.schema.json",
 }
 
 
@@ -31,9 +33,9 @@ class ValidateContractsTests(unittest.TestCase):
     def test_schema_metadata_has_unique_ids_and_versions(self):
         schemas = validate_contracts.load_schemas(REPO_ROOT)
 
-        self.assertEqual(len(schemas), 6)
-        self.assertEqual(len({schema["$id"] for schema in schemas.values()}), 6)
-        self.assertEqual(len({schema["schema_version"] for schema in schemas.values()}), 6)
+        self.assertEqual(len(schemas), 8)
+        self.assertEqual(len({schema["$id"] for schema in schemas.values()}), 8)
+        self.assertEqual(len({schema["schema_version"] for schema in schemas.values()}), 8)
         for schema in schemas.values():
             self.assertIsInstance(schema["title"], str)
             self.assertEqual(schema["type"], "object")
@@ -80,6 +82,19 @@ class ValidateContractsTests(unittest.TestCase):
             data = json.loads(path.read_text(encoding="utf-8"))
             serialized = json.dumps(data).lower()
             self.assertNotRegex(serialized, r'"(?:password|secret|api[_-]?key)"\s*:')
+
+    def test_person_lifecycle_contracts_freeze_states_and_actions(self):
+        event = validate_contracts.load_schemas(REPO_ROOT)["person-lifecycle-event-v1.schema.json"]
+        result = validate_contracts.load_schemas(REPO_ROOT)["person-lifecycle-result-v1.schema.json"]
+
+        self.assertEqual(event["schema_version"], "1.1.0")
+        self.assertEqual(event["properties"]["event_type"]["enum"], ["person.offboarded", "person.reinstated"])
+        self.assertEqual(event["properties"]["status"]["enum"], ["active", "inactive"])
+        self.assertIn("effective_at", event["required"])
+        self.assertEqual(
+            result["properties"]["status"]["enum"],
+            ["synced", "skipped", "pending_confirmation", "retrying", "failed"],
+        )
 
 
 if __name__ == "__main__":

@@ -17,6 +17,8 @@ EXPECTED_SCHEMAS = {
     "business-event-v1.schema.json": {"tenant_id", "event_id", "event_type", "source_system", "object_id", "revision", "trace_id", "idempotency_key"},
     "finance-result-v1.schema.json": {"tenant_id", "result_id", "source_system", "object_id", "revision", "status", "evidence_refs"},
     "lead-intake-v1.schema.json": {"contract_version", "intake_id", "source_system", "submitted_at", "contact", "consent", "idempotency_key"},
+    "person-lifecycle-event-v1.schema.json": {"tenant_id", "event_id", "event_type", "event_version", "source_system", "object_type", "object_id", "revision", "occurred_at", "effective_at", "correlation_id", "trace_id", "idempotency_key", "person", "status"},
+    "person-lifecycle-result-v1.schema.json": {"event_id", "target_system", "status", "changed", "received_at"},
 }
 SCHEMA_VERSION_RE = re.compile(r"^\d+\.\d+\.\d+$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
@@ -133,7 +135,7 @@ def validate_contracts(repo_root: Path | str) -> list[str]:
             if fingerprint != actual:
                 errors.append(f"fingerprint mismatch for {name}")
     if registered != set(EXPECTED_SCHEMAS):
-        errors.append("manifest does not register exactly the six Phase 1 schemas")
+        errors.append("manifest does not register exactly the Phase 1 schemas")
     return errors
 
 

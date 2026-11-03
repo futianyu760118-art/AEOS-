@@ -38,6 +38,10 @@ REQUIRED_MANIFEST_FIELDS = {
     "test_command",
     "rollback_command",
 }
+RUNTIME_PERSON_LIFECYCLE_SYSTEMS = {
+    "M01_KERNEL", "M02_EDP", "M03_EBMS", "M04_PLM", "M05_CRM", "M06_SPC",
+    "M07_HLC", "M09_FAC", "M10_POMS", "M13_AEOS_HUB", "M14_NOMI_1", "M14_NOMI",
+}
 
 
 def _load(path: Path) -> Any:
@@ -63,6 +67,24 @@ def validate_registry(repo_root: Path | str) -> list[str]:
         dependencies_doc = _load(registry_dir / "dependencies.yaml")
     except ValueError as exc:
         return [str(exc)]
+
+    try:
+        gates_doc = _load(registry_dir / "capability-gates.yaml")
+    except ValueError as exc:
+        return [str(exc)]
+    gates = gates_doc.get("gates") if isinstance(gates_doc, dict) else None
+    if not isinstance(gates, list):
+        errors.append("capability-gates.yaml must contain a gates list")
+        gates = []
+    gate_ids = {item.get("system_id") for item in gates if isinstance(item, dict)}
+    if gate_ids != {"M08_QUALITY", "M11_INTEGRATION", "M12_DEVSECOPS"}:
+        errors.append("capability-gates.yaml must contain M08_QUALITY, M11_INTEGRATION and M12_DEVSECOPS")
+    for gate in gates:
+        if not isinstance(gate, dict):
+            errors.append("capability gate entry must be an object")
+            continue
+        if gate.get("deployment_state") != "NOT_DEPLOYED":
+            errors.append(f"capability gate {gate.get('system_id')} must be NOT_DEPLOYED")
 
     systems = systems_doc.get("systems") if isinstance(systems_doc, dict) else None
     environments = environments_doc.get("environments") if isinstance(environments_doc, dict) else None
@@ -155,6 +177,14 @@ def validate_registry(repo_root: Path | str) -> list[str]:
             errors.append(f"manifest {path.name} references missing owner: {manifest.get('owner_ref')}")
         if manifest.get("environment_ref") not in environment_ids:
             errors.append(f"manifest {path.name} references missing environment: {manifest.get('environment_ref')}")
+        if system_id in RUNTIME_PERSON_LIFECYCLE_SYSTEMS:
+            for field in ("person_lifecycle_role", "person_lifecycle_endpoint", "sync_capabilities", "deployment_state"):
+                value = manifest.get(field)
+                if field == "sync_capabilities":
+                    if not isinstance(value, list) or not value:
+                        errors.append(f"manifest {path.name} missing person lifecycle capabilities")
+                elif not _non_empty(value):
+                    errors.append(f"manifest {path.name} missing person lifecycle field: {field}")
         registered = system_by_id.get(system_id)
         if registered:
             for field in ("module", "repository", "branch", "upstream_commit", "owner_ref", "environment_ref"):

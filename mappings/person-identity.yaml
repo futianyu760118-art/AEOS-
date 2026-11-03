@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "match_order": ["person_id", "emp_code"],
+  "conflict_policy": "failed",
+  "systems": [
+    {"system_id":"M01_KERNEL","person_id_field":"person_id","employee_code_field":"emp_code"},
+    {"system_id":"M02_EDP","person_id_field":"person_id","employee_code_field":"emp_code"},
+    {"system_id":"M03_EBMS","person_id_field":"person_id","employee_code_field":"emp_code"},
+    {"system_id":"M04_PLM","person_id_field":"person_id","employee_code_field":"emp_code"},
+    {"system_id":"M05_CRM","person_id_field":"person_id","employee_code_field":"emp_code"},
+    {"system_id":"M06_SPC","person_id_field":"person_id","employee_code_field":"emp_code"},
+    {"system_id":"M07_HLC","person_id_field":"person_id","employee_code_field":"emp_code"},
+    {"system_id":"M09_FAC","person_id_field":"person_id","employee_code_field":"emp_code"},
+    {"system_id":"M10_POMS","person_id_field":"person_id","employee_code_field":"emp_code"},
+    {"system_id":"M13_AEOS_HUB","person_id_field":"person_id","employee_code_field":"emp_code"},
+    {"system_id":"M14_NOMI_1","person_id_field":"person_id","employee_code_field":"emp_code"},
+    {"system_id":"M14_NOMI","person_id_field":"person_id","employee_code_field":"emp_code"}
+  ]
+}

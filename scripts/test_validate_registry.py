@@ -42,6 +42,22 @@ class ValidateRegistryTests(unittest.TestCase):
 
             self.assertTrue(any("owner sign-off" in error for error in errors))
 
+    def test_person_lifecycle_scope_has_twelve_runtime_targets_and_three_gates(self):
+        systems = json.loads((REPO_ROOT / "registry" / "systems.yaml").read_text(encoding="utf-8"))["systems"]
+        runtime = [item for item in systems if item.get("system_id") != "M00_AEOS"]
+        gates = json.loads((REPO_ROOT / "registry" / "capability-gates.yaml").read_text(encoding="utf-8"))["gates"]
+
+        self.assertEqual(len(systems), 13)
+        self.assertEqual(len(runtime), 12)
+        self.assertEqual({item["system_id"] for item in gates}, {"M08_QUALITY", "M11_INTEGRATION", "M12_DEVSECOPS"})
+        self.assertTrue(all(item["deployment_state"] == "NOT_DEPLOYED" for item in gates))
+
+    def test_runtime_manifest_requires_person_lifecycle_endpoint(self):
+        data = json.loads((REPO_ROOT / "registry" / "system-manifests" / "M03-EBMS.yaml").read_text(encoding="utf-8"))
+        self.assertEqual(data["person_lifecycle_role"], "adapter")
+        self.assertEqual(data["deployment_state"], "CANDIDATE")
+        self.assertTrue(data["person_lifecycle_endpoint"].endswith("/internal/aeos/person-lifecycle"))
+
 
 if __name__ == "__main__":
     unittest.main()
