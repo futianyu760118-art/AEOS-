@@ -1,0 +1,100 @@
+version: 1.0.0
+mapping_id: fac-ebms-result
+source:
+  system_id: M09_FAC
+  object_type: FinanceResult
+  owner: owner.m09
+target:
+  system_id: M03_EBMS
+  object_type: ManagementFinanceResult
+  owner: owner.m03
+ownership: fac_owns_finance_fact_ebms_owns_management_interpretation
+delivery:
+  event_type: fac.finance_result.verified
+  accepted_states: [VERIFIED]
+  delivery_semantics: at_least_once
+  idempotency_key: tenant_id + source_system + object_type + object_id + revision + event_type
+  ordering: per_finance_result_revision
+  stale_revision: retain_history_and_reject_overwrite
+keys:
+  business_key:
+    source: finance_result_id
+    target: source_finance_result_id
+  calculation_key:
+    source: calculation_run_id
+    target: calculation_run_ref
+  period_key:
+    source: accounting_period
+    target: accounting_period
+fields:
+  - source: tenant_id
+    target: tenant_id
+    required: true
+    transform: identity
+  - source: finance_result_id
+    target: source_finance_result_id
+    required: true
+    transform: string
+  - source: calculation_run_id
+    target: calculation_run_ref
+    required: true
+    transform: string
+  - source: accounting_period
+    target: accounting_period
+    required: true
+    transform: yyyy_mm
+  - source: verified_at
+    target: result_verified_at
+    required: true
+    transform: iso8601_with_timezone
+  - source: currency
+    target: currency
+    required: true
+    transform: iso_4217_upper
+  - source: total_cost
+    target: total_cost
+    required: true
+    transform: decimal
+  - source: total_revenue
+    target: total_revenue
+    required: true
+    transform: decimal
+  - source: gross_margin
+    target: gross_margin
+    required: true
+    transform: decimal
+  - source: margin_rate
+    target: margin_rate
+    required: true
+    transform: decimal_0_1
+  - source: exception_flags
+    target: exception_flags
+    required: true
+    transform: enum_set
+  - source: revision
+    target: source_revision
+    required: true
+    transform: positive_integer
+validation:
+  - EBMS consumes only VERIFIED FinanceResult; DRAFT or CALCULATED is rejected
+  - EBMS stores a reference and management projection, not an editable finance fact
+  - all monetary values retain currency, rate and calculation-run version
+  - corrections append a new revision and preserve the prior result for replay
+  - exception_flags may create an EBMS exception but may not silently change finance values
+state_mapping:
+  - source: VERIFIED
+    target: ACCEPTED
+    event: fac.finance_result.verified
+  - source: SUPERSEDED
+    target: SUPERSEDED
+    event: fac.finance_result.superseded
+  - source: REJECTED
+    target: REJECTED
+    event: fac.finance_result.rejected
+compatibility:
+  backward_compatible_changes: add_optional_field_only
+  breaking_change: major_version_and_replay_migration
+  replay: inbox_deduplication_required
+evidence:
+  required_refs: [finance_result_id, calculation_run_id, verification_evidence_id, source_event_id]
+  management_outputs: [exception, decision, action, result, review]

@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "control_plane": {"identity": "M01_KERNEL", "data_evidence": "M02_EDP", "management": "M03_EBMS"},
+  "direction": [
+    {"from": "KEYCLOAK_EXTERNAL", "to": "M01_KERNEL", "purpose": "OIDC identity and authentication"},
+    {"from": "M01_KERNEL", "to": "PORTAL_BFF_EXTERNAL", "purpose": "authorization, guard, and system manifest assembly"},
+    {"from": "PORTAL_BFF_EXTERNAL", "to": "BUSINESS_SYSTEMS", "purpose": "gateway-routed access; no direct browser database access"},
+    {"from": "M02_EDP", "to": "BUSINESS_SYSTEMS", "purpose": "event, audit, evidence, and result substrate"},
+    {"from": "M03_EBMS", "to": "M02_EDP", "purpose": "management facts, results, exceptions, decisions, and evidence"},
+    {"from": "M09_FAC", "to": "M02_EDP", "purpose": "all finance inputs and outputs through EDP"},
+    {"from": "M09_FAC", "to": "BUSINESS_DATABASES", "purpose": "FORBIDDEN: FAC must not directly access business databases"}
+  ],
+  "business_flow": ["M01_KERNEL", "M10_POMS", "PORTAL_BFF_EXTERNAL", "M05_CRM", "M06_SPC", "M09_FAC", "M03_EBMS"],
+  "prohibitions": ["FAC must not directly access CRM, SPC, HLC, EBMS, bank, or other business databases.", "Business systems retain ownership of their professional facts."]
+}

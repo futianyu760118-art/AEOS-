@@ -1,0 +1,103 @@
+version: 1.0.0
+mapping_id: spc-fac-delivery
+source:
+  system_id: M06_SPC
+  object_type: DeliveryResult
+  owner: owner.m06
+target:
+  system_id: M09_FAC
+  object_type: CalculationRunInput
+  owner: owner.m09
+ownership: source_system_retains_delivery_fact_fac_calculates_finance_fact
+delivery:
+  event_type: spc.delivery.verified
+  accepted_states: [VERIFIED]
+  delivery_semantics: at_least_once
+  idempotency_key: tenant_id + source_system + object_type + object_id + revision + event_type
+  ordering: per_delivery_revision
+  stale_revision: reject_without_overwrite
+keys:
+  business_key:
+    source: delivery_id
+    target: source_delivery_id
+  order_reference:
+    source: external_order_no
+    target: order_ref
+  shipment_line_key:
+    source: lines[].delivery_line_id
+    target: delivery_line_ref
+fields:
+  - source: tenant_id
+    target: tenant_id
+    required: true
+    transform: identity
+  - source: delivery_id
+    target: source_delivery_id
+    required: true
+    transform: string
+  - source: external_order_no
+    target: order_ref
+    required: true
+    transform: trim
+  - source: verified_at
+    target: delivery_verified_at
+    required: true
+    transform: iso8601_with_timezone
+  - source: lines[].part_no
+    target: lines[].part_no
+    required: true
+    transform: trim_upper
+  - source: lines[].delivered_quantity
+    target: lines[].delivered_quantity
+    required: true
+    transform: decimal_non_negative
+  - source: lines[].unit
+    target: lines[].quantity_unit
+    required: true
+    transform: uom_registry_lookup
+  - source: lines[].warehouse_ref
+    target: lines[].warehouse_ref
+    required: false
+    transform: reference_only
+  - source: lines[].batch_ref
+    target: lines[].batch_ref
+    required: false
+    transform: reference_only
+  - source: material_cost_basis
+    target: material_cost_basis
+    required: true
+    transform: decimal_non_negative
+  - source: currency
+    target: currency
+    required: true
+    transform: iso_4217_upper
+  - source: exchange_rate
+    target: exchange_rate
+    required: true
+    transform: decimal_positive
+  - source: revision
+    target: source_revision
+    required: true
+    transform: positive_integer
+validation:
+  - only VERIFIED delivery results may enter a FAC CalculationRun
+  - partial delivery is represented by a new revision and delivered_quantity delta
+  - return, cancellation and correction use explicit event types and never delete history
+  - BOM version, price version, currency and exchange rate are immutable run inputs
+  - FAC must not read SPC, CRM or EBMS databases directly
+state_mapping:
+  - source: VERIFIED
+    target: INPUT_ACCEPTED
+    event: spc.delivery.verified
+  - source: RETURNED
+    target: CORRECTION_REQUIRED
+    event: spc.delivery.returned
+  - source: CANCELLED
+    target: CANCELLED
+    event: spc.delivery.cancelled
+compatibility:
+  backward_compatible_changes: add_optional_field_only
+  breaking_change: major_version_and_reconciliation_window
+  replay: inbox_deduplication_required
+evidence:
+  required_refs: [delivery_id, delivery_revision, verification_evidence_id, source_event_id]

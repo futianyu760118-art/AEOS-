@@ -1,0 +1,102 @@
+version: 1.0.0
+mapping_id: crm-spc-order
+source:
+  system_id: M05_CRM
+  object_type: Order
+  owner: owner.m05
+target:
+  system_id: M06_SPC
+  object_type: DeliveryOrder
+  owner: owner.m06
+ownership: source_system_retains_business_fact
+delivery:
+  event_type: crm.order.confirmed
+  delivery_semantics: at_least_once
+  idempotency_key: tenant_id + source_system + object_type + object_id + revision + event_type
+  ordering: per_order_revision
+  stale_revision: reject_without_overwrite
+keys:
+  business_key:
+    source: order_no
+    target: external_order_no
+  correlation_key:
+    source: order_id
+    target: source_object_id
+  line_key:
+    source: lines[].line_id
+    target: source_line_id
+fields:
+  - source: tenant_id
+    target: tenant_id
+    required: true
+    transform: identity
+  - source: order_id
+    target: source_object_id
+    required: true
+    transform: string
+  - source: order_no
+    target: external_order_no
+    required: true
+    transform: trim
+  - source: customer_id
+    target: customer_ref
+    required: true
+    transform: reference_only
+  - source: currency
+    target: currency
+    required: true
+    transform: iso_4217_upper
+  - source: tax_rate
+    target: tax_rate
+    required: true
+    transform: decimal_0_1
+  - source: promised_delivery_at
+    target: requested_delivery_at
+    required: false
+    transform: iso8601_with_timezone
+  - source: lines[].part_no
+    target: lines[].part_no
+    required: true
+    transform: trim_upper
+  - source: lines[].quantity
+    target: lines[].ordered_quantity
+    required: true
+    transform: decimal_positive
+  - source: lines[].unit
+    target: lines[].quantity_unit
+    required: true
+    transform: uom_registry_lookup
+  - source: lines[].unit_price
+    target: lines[].unit_price
+    required: true
+    transform: decimal_non_negative
+  - source: revision
+    target: source_revision
+    required: true
+    transform: positive_integer
+state_mapping:
+  - source: CONFIRMED
+    target: READY
+    event: crm.order.confirmed
+  - source: AMENDED
+    target: CHANGE_PENDING
+    event: crm.order.amended
+  - source: CANCELLED
+    target: CANCELLED
+    event: crm.order.cancelled
+  - source: COMPLETED
+    target: CLOSED
+    event: crm.order.completed
+validation:
+  - customer_id must resolve in CRM; SPC stores a reference only
+  - every line part_no must be registered by the SPC material registry
+  - quantity and unit must pass the shared UOM registry
+  - currency, tax_rate and price must be retained as order-version facts
+  - cancellation and amendment are new revisions; never mutate an older delivery fact
+compatibility:
+  backward_compatible_changes: add_optional_field_only
+  breaking_change: major_version_and_dual_consumer_window
+  replay: inbox_deduplication_required
+evidence:
+  required_refs: [crm_order_id, crm_order_revision, source_event_id]
+  pii_policy: no_customer_contact_payload_in_event
