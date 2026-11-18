@@ -18,4 +18,5 @@
 | [ADR-2026-004](ADR-2026-004-m05-consumes-keycloak-principal.md) | M05 消费 Keycloak 主体上下文，但不自动建号 | Accepted |
 | [ADR-2026-005](ADR-2026-005-order-fact-ownership-switch.md) | 订单事实归属以 M05 为原点，用模式开关做时间切分迁移 | Accepted |
 | [ADR-2026-006](ADR-2026-006-m05-owns-inquiry-quotation-collaboration.md) | 询价报价协同以 M05 为编排方，M04 出规格、M09 出核价、回执进交接单 | Accepted |
+| [ADR-2026-007](ADR-2026-007-m05-evidence-plane.md) | 询价链路的证据平面：编号服务端签发，确认必须附可追溯证据 | Accepted |
 
