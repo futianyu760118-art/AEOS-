@@ -16,4 +16,5 @@
 | [ADR-2026-002](ADR-2026-002-m05-release-line-main.md) | M05 发布线为 main | Accepted |
 | [ADR-2026-003](ADR-2026-003-business-event-v1-freeze.md) | business-event-v1 保持冻结，V2 由出站边界投影 | Accepted |
 | [ADR-2026-004](ADR-2026-004-m05-consumes-keycloak-principal.md) | M05 消费 Keycloak 主体上下文，但不自动建号 | Accepted |
+| [ADR-2026-005](ADR-2026-005-order-fact-ownership-switch.md) | 订单事实归属以 M05 为原点，用模式开关做时间切分迁移 | Accepted |
 
