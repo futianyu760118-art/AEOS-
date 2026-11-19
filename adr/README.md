@@ -21,4 +21,5 @@
 | [ADR-2026-007](ADR-2026-007-m05-evidence-plane.md) | 询价链路的证据平面：编号服务端签发，确认必须附可追溯证据 | Accepted |
 | [ADR-2026-008](ADR-2026-008-m05-release-gate.md) | M05 发版前必须过六项门禁，漂移以模型与迁移一致为准 | Accepted |
 | [ADR-2026-009](ADR-2026-009-m05-imports-sales-data-from-edp.md) | 历史销售数据从 EDP 数据集导入 CRM，订单类数据集不走此通道 | Accepted |
+| [ADR-2026-010](ADR-2026-010-m05-order-delivery-two-step.md) | 交付完成拆成业务提交与负责人确认两步，completed 不再是终态 | Accepted |
 
