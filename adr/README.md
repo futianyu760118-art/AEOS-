@@ -20,4 +20,5 @@
 | [ADR-2026-006](ADR-2026-006-m05-owns-inquiry-quotation-collaboration.md) | 询价报价协同以 M05 为编排方，M04 出规格、M09 出核价、回执进交接单 | Accepted |
 | [ADR-2026-007](ADR-2026-007-m05-evidence-plane.md) | 询价链路的证据平面：编号服务端签发，确认必须附可追溯证据 | Accepted |
 | [ADR-2026-008](ADR-2026-008-m05-release-gate.md) | M05 发版前必须过六项门禁，漂移以模型与迁移一致为准 | Accepted |
+| [ADR-2026-009](ADR-2026-009-m05-imports-sales-data-from-edp.md) | 历史销售数据从 EDP 数据集导入 CRM，订单类数据集不走此通道 | Accepted |
 
