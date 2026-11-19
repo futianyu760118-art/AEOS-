@@ -47,6 +47,11 @@ M05（CRM）数据接入负责人；涉及 EDP 数据集字段变更时由 M02 �
 
 ## Evidence
 
-- `backend/tests/test_edp_import.py`：10 个用例（8 纯测 + 2 落库），覆盖英文列映射、显式覆盖与报错、必填缺失、资源推断、订单提示、翻页与截断、缺主键、预览提交、重复导入去重、非法行整体拒绝。
-- 全量：`pytest -q` → 516 passed（含真 Keycloak 两例）。
-- 顺带修掉的真缺陷：`data_import.commit` 在「导入表自带客户编码」时以 `Company(**values, code=…)` 重复传参，抛 `TypeError: got multiple values for keyword argument 'code'`。
+- `backend/tests/test_edp_import.py`：14 个用例（10 纯测 + 4 真实形态/落库），覆盖英文列映射、显式覆盖与报错、必填缺失、资源推断、订单拒绝、翻页与截断、缺主键、`attributes.` 前缀、扁平/嵌套行取值、码值翻译、预览提交、重复导入去重、非法行整体拒绝。
+- 全量：`pytest -q` → 520 passed。
+- 与真实 EDP 联调（2026-11-19，`http://150.158.13.110:9090`）：`master-customer` v5 导入 50 行成功、二次导入全 `skipped`；`master-material` v4 导入 50 行 `created=50`；`ads-order-list`/`ads-order-detail` 被拒并提示走 M06 订单同步。
+- 顺带修掉的真缺陷：
+  1. `data_import.commit` 在「导入表自带客户编码」时以 `Company(**values, code=…)` 重复传参，抛 `TypeError: got multiple values for keyword argument 'code'`。
+  2. `edp_import.commit` 用原始行按键取值（`attributes.customer_code`）交给通用导入，必填字段被静默丢弃，报成 `NotNullViolationError: null value in column "name"`；改为复用 `prepare` 阶段转换好的 CRM 字段值。
+  3. 失败分支先 `commit` 后未 `rollback`，真实错误被 `PendingRollbackError` 盖住；改为回滚后另起事务写 FAILED 日志。
+  4. 上游 `status` 码值（1/0）未翻译，整批被判不合法；新增 `VALUE_FIXES`。
