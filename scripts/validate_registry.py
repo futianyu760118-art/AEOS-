@@ -9,7 +9,11 @@ from pathlib import Path
 from typing import Any
 
 
-BRANCH = "aeos/phase1-v1.1"
+RELEASE_BRANCH = "aeos/phase1-v1.1"
+#: 2026-11-18 起 M05-CRM 的发布线切到 Gitee ``main``（ADR-2026-002）。
+#: 分支名只是"这一版从哪条线来"的描述，真正的锁定物是 ``upstream_commit``；
+#: 因此校验放宽为白名单，新增分支必须先进这里并补 ADR。
+ALLOWED_BRANCHES = frozenset({RELEASE_BRANCH, "main"})
 COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
 REQUIRED_SYSTEM_FIELDS = {
     "system_id",
@@ -116,8 +120,10 @@ def validate_registry(repo_root: Path | str) -> list[str]:
         if _non_empty(system_id):
             system_ids.add(system_id)
             system_by_id[system_id] = system
-        if system.get("branch") != BRANCH:
-            errors.append(f"invalid branch for {system_id}: expected {BRANCH}")
+        if system.get("branch") not in ALLOWED_BRANCHES:
+            errors.append(
+                f"invalid branch for {system_id}: expected one of {sorted(ALLOWED_BRANCHES)}"
+            )
         if not COMMIT_RE.fullmatch(system.get("upstream_commit", "")):
             errors.append(f"missing locked commit for {system_id}")
 
@@ -166,8 +172,8 @@ def validate_registry(repo_root: Path | str) -> list[str]:
         missing = REQUIRED_MANIFEST_FIELDS - manifest.keys()
         if missing:
             errors.append(f"manifest {path.name} missing fields: {', '.join(sorted(missing))}")
-        if manifest.get("branch") != BRANCH:
-            errors.append(f"invalid branch in manifest {path.name}")
+        if manifest.get("branch") not in ALLOWED_BRANCHES:
+            errors.append(f"invalid branch in manifest {path.name}: expected one of {sorted(ALLOWED_BRANCHES)}")
         if not COMMIT_RE.fullmatch(manifest.get("upstream_commit", "")):
             errors.append(f"missing locked commit in manifest {path.name}")
         for field in ("health_check", "build_command", "test_command", "rollback_command"):
